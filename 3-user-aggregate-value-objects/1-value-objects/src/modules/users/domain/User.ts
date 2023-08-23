@@ -1,53 +1,37 @@
-import validate from "uuid-validate";
-import { z } from "zod";
-
-import { InvalidArgumentError } from "../../shared/domain/value-object/InvalidArgumentError";
+import { UserEmail } from "./UserEmail";
+import { UserId } from "./UserId";
+import { UserPassword } from "./UserPassword";
 
 export interface UserProps {
-	id: string;
-	email: string;
-	password: string;
+	id: UserId;
+	email: UserEmail;
+	password: UserPassword;
 }
 
 export class User {
-	readonly id: string; // UUID
-	email: string;
-	readonly password: string;
+	private readonly _id: UserId;
+	private _email: UserEmail;
+	private readonly _password: UserPassword;
 
 	constructor({ id, email, password }: UserProps) {
-		this.ensureIsValidUuid(id);
-		this.ensureIsValidEmail(email);
-		this.ensurePasswordIsValid(password);
+		this._id = id;
+		this._email = email;
+		this._password = password;
+	}
 
-		this.id = id;
-		this.email = email;
-		this.password = password;
+	get id(): string {
+		return this._id.value;
+	}
+
+	get email(): string {
+		return this._email.value;
+	}
+
+	get password(): string {
+		return this._password.value;
 	}
 
 	updateEmail(newEmail: string): void {
-		this.ensureIsValidEmail(newEmail);
-		this.email = newEmail;
-	}
-
-	private ensureIsValidUuid(id: string): void {
-		if (!validate(id)) {
-			throw new InvalidArgumentError(`<${id}> is not a valid UUID`);
-		}
-	}
-
-	private ensureIsValidEmail(email: string): void {
-		const result = z.string().email().safeParse(email);
-
-		if (!result.success) {
-			throw new InvalidArgumentError(`<${email}> is not a valid email`);
-		}
-	}
-
-	private ensurePasswordIsValid(password: string): void {
-		const result = z.string().min(8).safeParse(password);
-
-		if (!result.success) {
-			throw new InvalidArgumentError(`<${password}> is not a valid password`);
-		}
+		this._email = new UserEmail(newEmail);
 	}
 }
