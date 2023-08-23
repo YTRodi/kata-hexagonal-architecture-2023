@@ -2,14 +2,11 @@ import { InvalidArgumentError } from "../../../../../src/modules/shared/domain/v
 import { CreateUserRequest } from "../../../../../src/modules/users/application/create/CreateUserRequest";
 import { UserCreator } from "../../../../../src/modules/users/application/create/UserCreator";
 import { User } from "../../../../../src/modules/users/domain/User";
-import { UserRepository } from "../../../../../src/modules/users/domain/UserRepository";
+import { UserRepositoryMock } from "../../__mocks__/UserRepositoryMock";
 
 describe("UserCreator", () => {
 	test("should create a valid iuser", async () => {
-		const userRepository: UserRepository = {
-			save: jest.fn(),
-			search: jest.fn(),
-		};
+		const userRepository = new UserRepositoryMock();
 		const userCreator = new UserCreator(userRepository);
 		const request: CreateUserRequest = {
 			id: "123e4567-e89b-12d3-a456-426614174000",
@@ -23,8 +20,7 @@ describe("UserCreator", () => {
 		});
 
 		await userCreator.run(request);
-
-		expect(userRepository.save).toHaveBeenCalledWith(user);
+		userRepository.assertSaveHaveBeenCalledWith(user);
 	});
 
 	it("should throw error if id is invalid", () => {

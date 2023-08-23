@@ -6,6 +6,7 @@ module.exports = {
 		"@typescript-eslint/unbound-method": "off",
 		"@typescript-eslint/no-misused-promises": "off",
 		"@typescript-eslint/no-unsafe-argument": "off",
+		"@typescript-eslint/require-await": "off",
 	},
 	overrides: [
 		{
