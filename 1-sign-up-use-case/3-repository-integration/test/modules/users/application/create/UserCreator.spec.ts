@@ -8,6 +8,7 @@ describe("UserCreator", () => {
 	test("should create a valid iuser", async () => {
 		const userRepository: UserRepository = {
 			save: jest.fn(),
+			search: jest.fn(),
 		};
 		const userCreator = new UserCreator(userRepository);
 		const request: CreateUserRequest = {
